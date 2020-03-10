@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 mongoose.set('useCreateIndex', true);
+
 const userSchema = new Schema({
     name: {
         type: String,
@@ -22,4 +23,13 @@ const userSchema = new Schema({
     timestamps: true //guarda fecha de cracion y de actualizacion
 });
 
-module.exports = userSchema;
+userSchema.set('toJSON', {
+    virtuals: true
+});
+
+const Users = mongoose.model('Users', userSchema);
+
+
+module.exports = {
+    Users
+};
