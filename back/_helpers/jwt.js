@@ -14,8 +14,12 @@ function jwt() {
 		path: [
 			// Lista de rutas que no requieren Autenticación
 			'/api/login',
-			'/api/register'
-
+			'/api/register',
+			'/evaluador/addEvaluador',
+			'/evaluador',
+			'/evaluador/getAllEvaluador',
+			/^(\/evaluador\/deleteEvaluador\/)/,
+			/^(\/evaluador\/editEvaluador\/)/
 
 		]
 	});
