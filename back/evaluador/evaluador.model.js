@@ -10,15 +10,18 @@ const evaluadorSchema = new Schema({
         type: String,
         required: true
     },
-    position: {
+    position: { //cargo
         type: String,
         required: true
     },
-    ratio: {
-        type: String,
-        default: 'N/A'
+    ratio: { //alcance 
+        tipoAlcance: String,
+        clientes: [{
+            nombreCliente: String,
+            ubicacionCliente: String
+        }]
     },
-    type: {
+    type: { //tipo
         type: String,
         required: true
     }
