@@ -18,6 +18,7 @@ function jwt() {
 			'/evaluador/addEvaluador',
 			'/evaluador',
 			'/evaluador/getAllEvaluador',
+			/^(\/evaluador\/getEvaluador\/)/,
 			/^(\/evaluador\/deleteEvaluador\/)/,
 			/^(\/evaluador\/editEvaluador\/)/
 

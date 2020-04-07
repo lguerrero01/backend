@@ -18,12 +18,15 @@ const evaluadorSchema = new Schema({
         tipoAlcance: String,
         clientes: [{
             nombreCliente: String,
-            ubicacionCliente: String
+            ubicacionCliente: [{
+                nombreUbicacion: String,
+                poblacion: Number
+            }]
         }]
     },
     type: { //tipo
         type: String,
-        required: true
+        // required: true
     }
 });
 
