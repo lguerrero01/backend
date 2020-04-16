@@ -22,6 +22,7 @@ app.use(jwt());
 
 app.use('/api', require("./auth/auth.controller"));
 app.use('/evaluador', require("./evaluador/evaluador.controller"));
+app.use('/cuestionario', require('./cuestionario/cuestionario.controller'));
 
 // global error handler
 app.use(errorHandler);

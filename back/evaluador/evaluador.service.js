@@ -7,7 +7,8 @@ module.exports = {
     getEvaluador,
     addEvaluador,
     editEvaluador,
-    deleteEvaluador
+    deleteEvaluador,
+    preguntasPorDia
 }
 
 async function getAllEvaluador() {
@@ -47,3 +48,17 @@ async function deleteEvaluador(idEvaluador) {
         throw error;
     }
 }
+
+async function preguntasPorDia (){
+    const evaluadores = await COLLECTION_EVALUADOR.find();
+    const poblacion = consulta por hacerce;
+
+    evaluadores.forEach((evaluador) => {
+        const dias = Math.ceil(evaluador.tiempoCuestionario / evaluador.periodicididad);
+        const preguntasPorDia = Math.ceil(dias / cantPreguntas);
+        const cantEvaluarTiempo = Math.ceil(cantPreguntas / preguntasPorDia); 
+        const tiempoEvaluarPersona =  Math.ceil(dias / cantEvaluarTiempo);
+        const personaPorDia = math.ceil(poblacion / tiempoEvaluarPersona);
+    });
+}
+

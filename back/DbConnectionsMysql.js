@@ -2,7 +2,7 @@
 var mysql = require('mysql');
 // Consulta SQL.
 var sql = 'SELECT * FROM actualizar LIMIT 10';
-
+var poblacionSql = 'SELECT * FROM _ficha'
 // Parámetros de conexión a la base de datos.
 var con = mysql.createConnection({
     host: 'localhost',
@@ -28,6 +28,22 @@ con.connect(function (err) {
         // for (i = 0; i < result.length; i++) {
         //     console.log("Result: " + result[i].descripcion);
         // }
+        console.log(result);
+        con.end();
+    });
+});
+
+con.connect(function (err) {
+    if (err) throw err;
+    console.log("Connected!");
+    
+    con.query( poblacionSql, function (err, result) {
+        if (err) throw err;
+
+         Bucle que recore los resultados y muestra en consola.
+         for (i = 0; i < result.length; i++) {
+             console.log("Result: " + result[i].descripcion);
+         }
         console.log(result);
         con.end();
     });

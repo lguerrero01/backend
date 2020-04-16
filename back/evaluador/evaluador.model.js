@@ -27,10 +27,36 @@ const evaluadorSchema = new Schema({
     type: { //tipo
         type: String,
         // required: true
+    },
+    periodicidad: { //tiempo que se repetira la encuesta
+        type: Number,
+        require: true
+    },
+    tiempoCuestionario: { // tiempo en que se debe terminar la encuesta 
+        type: Number,
+        require: true
+    },
+    pregunta: [{
+		type: Schema.Types.ObjectId,
+		ref: 'Pregunta'
+	}]
+
+});
+
+
+const preguntasSchema = new Schema({
+    descripcion: {
+        type: String,
+        default: '',
+        unique: true,
+        require: true
     }
+
 });
 
 const EVALUADOR = mongoose.model('Evaluador', evaluadorSchema);
+
+const PREGUNTAS = mongoose.model('Pregunta', preguntasSchema);
 
 module.exports = {
     EVALUADOR
