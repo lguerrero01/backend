@@ -4,14 +4,14 @@ const Schema = mongoose.Schema;
 const cuestionarioSchema = new Schema({
 
     cuestionario: [{
-		type: Schema.Types.ObjectId,
-		ref: 'Pregunta'
-	}],
+        type: Schema.Types.ObjectId,
+        ref: 'Pregunta'
+    }],
     cargo: {
         type: String,
         default: '',
         unique: true,
-        require: true  
+        require: true
     }
 
 
@@ -33,7 +33,7 @@ const preguntasSchema = new Schema({
 });
 
 const CUESTIONARIO = mongoose.model('Cuestionario', cuestionarioSchema);
-const PREGUNTAS = mongoose.model('Pregunta', preguntasSchema);
+const PREGUNTAS = mongoose.model('interrogacion', preguntasSchema);
 
 module.exports = {
     CUESTIONARIO,
