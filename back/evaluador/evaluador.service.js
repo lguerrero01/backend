@@ -80,7 +80,7 @@ async function determinarPoblacion(evaluador) {
 
             con.connect(function (err) {
                 if (err) throw err;
-                console.log("Conectador a poblacion estadal");
+                console.log("Conectado a poblacion estadal");
 
                 con.query(consultaSql, function (err, result) {
                     if (err) throw err;
@@ -94,9 +94,45 @@ async function determinarPoblacion(evaluador) {
             });
 
         } else {
-            var consultaSql = `SELECT * FROM v_ficha WHERE 'where' = ${evaluador.ratio.tipoAlcance}`;
+            const clienteConUbicacion = [],
+                clienteSinUbicacion = [];
 
 
+            evaluador.ratio.clientes.forEach(cliente => { //separa a los clientes que tienen ubicacion con los que no.
+
+                if (cliente.ubicacionCliente.length == 0) {
+                    clienteConUbicacion.push(cliente);
+
+
+                } else {
+                    clienteSinUbicacion.push(cliente.nombreCliente);
+                }
+
+            });
+
+            if (clienteSinUbicacion.length > 0) {
+                var consultaConCliente = `SELECT * FROM v_ficha WHERE 'estado' = ${evaluador.ratio.tipoAlcance} AND `;
+
+                clienteSinUbicacion.forEach(cliente => { //concardenar consulta para los clientes sin ubicacion
+                    consultaConCliente = `${consultaConCliente} 'cliente' = ${cliente} OR`;
+
+                });
+                consultaConCliente = consultaConCliente.split(' OR')[0]; //elimina el ultimo OR de la consulta
+            }
+
+            if (clienteConUbicacion.length > 0) {
+                var consultaConUbicacion = `SELECT * FROM v_ficha WHERE 'estado' = ${evaluador.ratio.tipoAlcance} AND `;
+
+                clienteConUbicacion.forEach(cliente => {
+                    consultaConUbicacion = `${consultaConUbicacion} 'cliente' = ${cliente.nombreCliente} AND `;
+
+                    cliente.ubicacionCliente.forEach(ubicacion => {
+                        consultaConUbicacion = `${consultaConUbicacion} 'ubicacion' = ${ubicacion.nombreUbicacion} OR`;
+                    });
+                });
+                consultaConCliente = consultaConCliente.split(' OR')[0]; //elimina el ultimo OR de la consulta
+
+            }
 
         }
     }
