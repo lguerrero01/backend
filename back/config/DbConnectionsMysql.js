@@ -13,7 +13,7 @@ var con = mysql.createConnection({
     database: 'ib_demo',
     port: 5360
 });
-
+//
 module.exports = con;
 
 // Funcion que nos permite comprobar la conexión a la base de datos.

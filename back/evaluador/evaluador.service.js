@@ -12,7 +12,8 @@ module.exports = {
     addEvaluador,
     editEvaluador,
     deleteEvaluador,
-    preguntasPorDia
+    preguntasPorDia,
+    determinarPoblacion
 }
 
 async function getAllEvaluador() {
@@ -55,7 +56,8 @@ async function deleteEvaluador(idEvaluador) {
 
 async function determinarPoblacion(evaluador) {
     var poblacion;
-    if (evaluador.ratio.tipoAlcance == "Nacional") {
+    //evaluador.ratio.tipoAlcance == "Nacional" //contenido del if
+    if (false) {
 
         var consultaSql = 'SELECT * FROM v_ficha LIMIT 20';
 
@@ -75,7 +77,8 @@ async function determinarPoblacion(evaluador) {
         });
 
     } else {
-        if (evaluador.ratio.clientes == null) {
+        // evaluador.ratio.clientes == null //contenido del if
+        if (false) { //cuando no tiene clientes 
             var consultaSql = `SELECT * FROM v_ficha WHERE 'estado' = ${evaluador.ratio.tipoAlcance} LIMIT 20`;
 
             con.connect(function (err) {
@@ -94,43 +97,93 @@ async function determinarPoblacion(evaluador) {
             });
 
         } else {
-            const clienteConUbicacion = [],
-                clienteSinUbicacion = [];
+            // const clienteConUbicacion = ['cliente1', 'cliente2', 'cliente3', 'cliente4'],
+            // clienteSinUbicacion = ['cliente4', 'cliente3', 'cliente2', 'cliente1'];
 
 
-            evaluador.ratio.clientes.forEach(cliente => { //separa a los clientes que tienen ubicacion con los que no.
+            // evaluador.ratio.clientes.forEach(cliente => { //separa a los clientes que tienen ubicacion con los que no.
 
-                if (cliente.ubicacionCliente.length == 0) {
-                    clienteConUbicacion.push(cliente);
+            //     if (cliente.ubicacionCliente.length == 0) {
+
+            //         clienteConUbicacion.push(cliente);
 
 
-                } else {
-                    clienteSinUbicacion.push(cliente.nombreCliente);
+            //     } else {
+            //         clienteSinUbicacion.push(cliente.nombreCliente);
+            //     }
+
+            // });
+            const clienteSinUbicacion = [{
+                    nombreCliente: "cocacola"
+                },
+                {
+                    nombreCliente: "pdvsa"
+                },
+                {
+                    nombreCliente: "oesvica"
                 }
-
-            });
+            ];
 
             if (clienteSinUbicacion.length > 0) {
-                var consultaConCliente = `SELECT * FROM v_ficha WHERE 'estado' = ${evaluador.ratio.tipoAlcance} AND `;
-
+                var consultaConCliente = `SELECT * FROM v_ficha WHERE ('estado' = carabobo AND (`;
+                //'estado' = ${evaluador.ratio.tipoAlcance}
                 clienteSinUbicacion.forEach(cliente => { //concardenar consulta para los clientes sin ubicacion
-                    consultaConCliente = `${consultaConCliente} 'cliente' = ${cliente} OR`;
+                    consultaConCliente = `${consultaConCliente} 'cliente' = ${cliente.nombreCliente} OR`;
 
                 });
-                consultaConCliente = consultaConCliente.split(' OR')[0]; //elimina el ultimo OR de la consulta
+                consultaConCliente = consultaConCliente.substring(0, consultaConCliente.length - 3); //elimina el ultimo OR de la consulta
+                consultaConCliente = `${consultaConCliente} ))`; //agrega los parentesis
+                console.log("clientes sin ubicacion", consultaConCliente);
+
             }
 
-            if (clienteConUbicacion.length > 0) {
-                var consultaConUbicacion = `SELECT * FROM v_ficha WHERE 'estado' = ${evaluador.ratio.tipoAlcance} AND `;
 
+            const clienteConUbicacion = [{
+                    nombreCliente: "cocacola",
+                    ubicacionCliente: [{
+                            nombreUbicacion: "ubicacion1"
+                        },
+                        {
+                            nombreUbicacion: "ubicacion123"
+                        }
+                    ]
+                },
+                {
+                    nombreCliente: "pdvsa",
+                    ubicacionCliente: [{
+                            nombreUbicacion: "ubicacion2"
+                        },
+                        {
+                            nombreUbicacion: "ubicacion234"
+                        }
+                    ]
+                },
+                {
+                    nombreCliente: "oesvica",
+                    ubicacionCliente: [{
+                        nombreUbicacion: "ubicacion3"
+                    }]
+                }
+            ];
+
+            if (clienteConUbicacion.length > 0) {
+                var consultaConUbicacion = `SELECT * FROM v_ficha WHERE ('estado' = carabobo  AND `;
+                // ${evaluador.ratio.tipoAlcance}
                 clienteConUbicacion.forEach(cliente => {
-                    consultaConUbicacion = `${consultaConUbicacion} 'cliente' = ${cliente.nombreCliente} AND `;
+                    consultaConUbicacion = `${consultaConUbicacion} ('cliente' = ${cliente.nombreCliente} AND (`;
 
                     cliente.ubicacionCliente.forEach(ubicacion => {
                         consultaConUbicacion = `${consultaConUbicacion} 'ubicacion' = ${ubicacion.nombreUbicacion} OR`;
                     });
+                    consultaConUbicacion = consultaConUbicacion.substring(0, consultaConUbicacion.length - 3); //elimina el ultimo OR de la consulta
+
+                    consultaConUbicacion = `${consultaConUbicacion} ))) AND`; //agrega los parentesis
+
                 });
-                consultaConCliente = consultaConCliente.split(' OR')[0]; //elimina el ultimo OR de la consulta
+                consultaConUbicacion = consultaConUbicacion.substring(0, consultaConUbicacion.length - 4); //elimina el ultimo AND de la consulta
+
+                // consultaConCliente = consultaConCliente.split(' AND')[0]; //elimina el ultimo OR de la consulta
+                console.log("clientes con ubicacion", consultaConUbicacion);
 
             }
 

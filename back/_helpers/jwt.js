@@ -20,7 +20,8 @@ function jwt() {
 			'/evaluador/getAllEvaluador',
 			/^(\/evaluador\/getEvaluador\/)/,
 			/^(\/evaluador\/deleteEvaluador\/)/,
-			/^(\/evaluador\/editEvaluador\/)/
+			/^(\/evaluador\/editEvaluador\/)/,
+			'/evaluador/prueba'
 
 		]
 	});
