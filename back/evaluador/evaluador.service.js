@@ -56,8 +56,8 @@ async function deleteEvaluador(idEvaluador) {
 
 async function determinarPoblacion(evaluador) {
     var poblacion;
-    //evaluador.ratio.tipoAlcance == "Nacional" //contenido del if
-    if (false) {
+    // //contenido del if
+    if (evaluador.ratio.tipoAlcance == "Nacional") {
 
         var consultaSql = 'SELECT * FROM v_ficha LIMIT 20';
 
@@ -77,8 +77,8 @@ async function determinarPoblacion(evaluador) {
         });
 
     } else {
-        // evaluador.ratio.clientes == null //contenido del if
-        if (false) { //cuando no tiene clientes 
+        //  //contenido del if
+        if (evaluador.ratio.clientes == null) { //cuando no tiene clientes 
             var consultaSql = `SELECT * FROM v_ficha WHERE 'estado' = ${evaluador.ratio.tipoAlcance} LIMIT 20`;
 
             con.connect(function (err) {
@@ -101,32 +101,32 @@ async function determinarPoblacion(evaluador) {
             // clienteSinUbicacion = ['cliente4', 'cliente3', 'cliente2', 'cliente1'];
 
 
-            // evaluador.ratio.clientes.forEach(cliente => { //separa a los clientes que tienen ubicacion con los que no.
+            evaluador.ratio.clientes.forEach(cliente => { //separa a los clientes que tienen ubicacion con los que no.
 
-            //     if (cliente.ubicacionCliente.length == 0) {
+                if (cliente.ubicacionCliente.length == 0) {
 
-            //         clienteConUbicacion.push(cliente);
+                    clienteConUbicacion.push(cliente);
 
 
-            //     } else {
-            //         clienteSinUbicacion.push(cliente.nombreCliente);
-            //     }
-
-            // });
-            const clienteSinUbicacion = [{
-                    nombreCliente: "cocacola"
-                },
-                {
-                    nombreCliente: "pdvsa"
-                },
-                {
-                    nombreCliente: "oesvica"
+                } else {
+                    clienteSinUbicacion.push(cliente.nombreCliente);
                 }
-            ];
+
+            });
+            // const clienteSinUbicacion = [{  // ññena clientes sin ubicacion localmente
+            //         nombreCliente: "cocacola"
+            //     },
+            //     {
+            //         nombreCliente: "pdvsa"
+            //     },
+            //     {
+            //         nombreCliente: "oesvica"
+            //     }
+            // ];
 
             if (clienteSinUbicacion.length > 0) {
-                var consultaConCliente = `SELECT * FROM v_ficha WHERE ('estado' = carabobo AND (`;
-                //'estado' = ${evaluador.ratio.tipoAlcance}
+                var consultaConCliente = `SELECT * FROM v_ficha WHERE ('estado' = ${evaluador.ratio.tipoAlcance} AND (`;
+                //'estado' = 
                 clienteSinUbicacion.forEach(cliente => { //concardenar consulta para los clientes sin ubicacion
                     consultaConCliente = `${consultaConCliente} 'cliente' = ${cliente.nombreCliente} OR`;
 
@@ -138,37 +138,37 @@ async function determinarPoblacion(evaluador) {
             }
 
 
-            const clienteConUbicacion = [{
-                    nombreCliente: "cocacola",
-                    ubicacionCliente: [{
-                            nombreUbicacion: "ubicacion1"
-                        },
-                        {
-                            nombreUbicacion: "ubicacion123"
-                        }
-                    ]
-                },
-                {
-                    nombreCliente: "pdvsa",
-                    ubicacionCliente: [{
-                            nombreUbicacion: "ubicacion2"
-                        },
-                        {
-                            nombreUbicacion: "ubicacion234"
-                        }
-                    ]
-                },
-                {
-                    nombreCliente: "oesvica",
-                    ubicacionCliente: [{
-                        nombreUbicacion: "ubicacion3"
-                    }]
-                }
-            ];
+            // const clienteConUbicacion = [{ // llena clientes con ubicacion localmente
+            //         nombreCliente: "cocacola",
+            //         ubicacionCliente: [{
+            //                 nombreUbicacion: "ubicacion1"
+            //             },
+            //             {
+            //                 nombreUbicacion: "ubicacion123"
+            //             }
+            //         ]
+            //     },
+            //     {
+            //         nombreCliente: "pdvsa",
+            //         ubicacionCliente: [{
+            //                 nombreUbicacion: "ubicacion2"
+            //             },
+            //             {
+            //                 nombreUbicacion: "ubicacion234"
+            //             }
+            //         ]
+            //     },
+            //     {
+            //         nombreCliente: "oesvica",
+            //         ubicacionCliente: [{
+            //             nombreUbicacion: "ubicacion3"
+            //         }]
+            //     }
+            // ];
 
             if (clienteConUbicacion.length > 0) {
-                var consultaConUbicacion = `SELECT * FROM v_ficha WHERE ('estado' = carabobo  AND `;
-                // ${evaluador.ratio.tipoAlcance}
+                var consultaConUbicacion = `SELECT * FROM v_ficha WHERE ('estado' = ${evaluador.ratio.tipoAlcance} AND `;
+                // 
                 clienteConUbicacion.forEach(cliente => {
                     consultaConUbicacion = `${consultaConUbicacion} ('cliente' = ${cliente.nombreCliente} AND (`;
 
