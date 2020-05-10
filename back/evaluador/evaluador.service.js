@@ -61,25 +61,26 @@ async function determinarPoblacion(evaluador) {
 
         var consultaSql = 'SELECT * FROM v_ficha LIMIT 20';
 
-        con.connect(function (err) {
+        // con.connect(function (err) {
+        //     if (err) throw err;
+        //     console.log("Conectado a poblacion nacional");
+
+
+        // });
+        con.query(consultaSql, function (err, result) {
             if (err) throw err;
-            console.log("Conectado a poblacion nacional");
 
-            con.query(consultaSql, function (err, result) {
-                if (err) throw err;
+            poblacion = result.length;
 
-                poblacion = result.length;
+            console.log("poblacion nacional: ", poblacion);
 
-                console.log(poblacion);
 
-                con.end();
-            });
         });
 
     } else {
-        //  //contenido del if
+
         if (evaluador.ratio.clientes == null) { //cuando no tiene clientes 
-            var consultaSql = `SELECT * FROM v_ficha WHERE 'estado' = ${evaluador.ratio.tipoAlcance} LIMIT 20`;
+            var consultaSql = `SELECT * FROM v_ficha WHERE estado = '${evaluador.ratio.tipoAlcance}' LIMIT 20`;
 
             con.connect(function (err) {
                 if (err) throw err;
@@ -97,9 +98,9 @@ async function determinarPoblacion(evaluador) {
             });
 
         } else {
-            // const clienteConUbicacion = ['cliente1', 'cliente2', 'cliente3', 'cliente4'],
-            // clienteSinUbicacion = ['cliente4', 'cliente3', 'cliente2', 'cliente1'];
 
+            let clienteSinUbicacion = [],
+                clienteConUbicacion = [];
 
             evaluador.ratio.clientes.forEach(cliente => { //separa a los clientes que tienen ubicacion con los que no.
 
@@ -113,67 +114,61 @@ async function determinarPoblacion(evaluador) {
                 }
 
             });
-            // const clienteSinUbicacion = [{  // ññena clientes sin ubicacion localmente
-            //         nombreCliente: "cocacola"
-            //     },
-            //     {
-            //         nombreCliente: "pdvsa"
-            //     },
-            //     {
-            //         nombreCliente: "oesvica"
-            //     }
-            // ];
 
             if (clienteSinUbicacion.length > 0) {
-                var consultaConCliente = `SELECT * FROM v_ficha WHERE ('estado' = ${evaluador.ratio.tipoAlcance} AND (`;
-                //'estado' = 
+                console.log(evaluador);
+                console.log("estoy en cliente sin ubicacion");
+                var consultaConCliente = `SELECT * FROM v_ficha WHERE (estado = '${evaluador.ratio.tipoAlcance}' AND (`;
+
                 clienteSinUbicacion.forEach(cliente => { //concardenar consulta para los clientes sin ubicacion
-                    consultaConCliente = `${consultaConCliente} 'cliente' = ${cliente.nombreCliente} OR`;
+
+                    consultaConCliente = `${consultaConCliente} cliente = '${cliente}' OR`;
 
                 });
                 consultaConCliente = consultaConCliente.substring(0, consultaConCliente.length - 3); //elimina el ultimo OR de la consulta
                 consultaConCliente = `${consultaConCliente} ))`; //agrega los parentesis
-                console.log("clientes sin ubicacion", consultaConCliente);
 
+
+                //*************************/
+                // consultaConCliente = `SELECT * FROM v_ficha WHERE 'estado' = Carabobo AND 'cliente' = CORPORACION AMERICANA DE RESINAS CORAMER C.A`;
+                // con.connect(function (err) {
+                //     if (err) throw err;
+                //     console.log("Conectado a poblacion estadal con clientes sin ubicacion");
+
+                //     con.query(consultaConCliente, function (err, result) {
+                //         if (err) throw err;
+
+                //         poblacion = result.length;
+
+                //         console.log(poblacion);
+
+                //         con.end();
+                //     });
+                // });
+                con.query(consultaConCliente, function (err, result) {
+                    if (err) throw err;
+
+                    poblacion = result.length;
+
+                    console.log(poblacion);
+
+                });
+                console.log("consulta de clientes sin ubicacion", consultaConCliente);
+
+                //***********************//
             }
 
 
-            // const clienteConUbicacion = [{ // llena clientes con ubicacion localmente
-            //         nombreCliente: "cocacola",
-            //         ubicacionCliente: [{
-            //                 nombreUbicacion: "ubicacion1"
-            //             },
-            //             {
-            //                 nombreUbicacion: "ubicacion123"
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         nombreCliente: "pdvsa",
-            //         ubicacionCliente: [{
-            //                 nombreUbicacion: "ubicacion2"
-            //             },
-            //             {
-            //                 nombreUbicacion: "ubicacion234"
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         nombreCliente: "oesvica",
-            //         ubicacionCliente: [{
-            //             nombreUbicacion: "ubicacion3"
-            //         }]
-            //     }
-            // ];
-
             if (clienteConUbicacion.length > 0) {
-                var consultaConUbicacion = `SELECT * FROM v_ficha WHERE ('estado' = ${evaluador.ratio.tipoAlcance} AND `;
+                console.log("estoy en cliente con ubicacion");
+
+                var consultaConUbicacion = `SELECT * FROM v_ficha WHERE (estado = '${evaluador.ratio.tipoAlcance}' AND `;
                 // 
                 clienteConUbicacion.forEach(cliente => {
-                    consultaConUbicacion = `${consultaConUbicacion} ('cliente' = ${cliente.nombreCliente} AND (`;
+                    consultaConUbicacion = `${consultaConUbicacion} (cliente = '${cliente.nombreCliente}' AND (`;
 
                     cliente.ubicacionCliente.forEach(ubicacion => {
-                        consultaConUbicacion = `${consultaConUbicacion} 'ubicacion' = ${ubicacion.nombreUbicacion} OR`;
+                        consultaConUbicacion = `${consultaConUbicacion} ubicacion = '${ubicacion.nombreUbicacion}' OR`;
                     });
                     consultaConUbicacion = consultaConUbicacion.substring(0, consultaConUbicacion.length - 3); //elimina el ultimo OR de la consulta
 
@@ -185,12 +180,28 @@ async function determinarPoblacion(evaluador) {
                 // consultaConCliente = consultaConCliente.split(' AND')[0]; //elimina el ultimo OR de la consulta
                 console.log("clientes con ubicacion", consultaConUbicacion);
 
+                //*************************/
+                con.connect(function (err) {
+                    if (err) throw err;
+                    console.log("Conectado a poblacion estadal con clientes con ubicacion");
+
+                    con.query(consultaConUbicacion, function (err, result) {
+                        if (err) throw err;
+
+                        poblacion = result.length;
+
+                        console.log(poblacion);
+
+                        con.end();
+                    });
+                });
+                //***********************/
             }
 
         }
     }
 
-
+    return (poblacion);
 }
 
 
@@ -199,10 +210,23 @@ async function preguntasPorDia() {
     const evaluadores = await COLLECTION_EVALUADOR.find();
 
     evaluadores.forEach((evaluador) => {
+        const poblacion = determinarPoblacion(evaluador);
+        const cantPreguntas = evaluador.pregunta.length;
+
         const dias = Math.ceil(evaluador.tiempoCuestionario / evaluador.periodicididad);
         const preguntasPorDia = Math.ceil(dias / cantPreguntas);
         const cantEvaluarTiempo = Math.ceil(cantPreguntas / preguntasPorDia);
         const tiempoEvaluarPersona = Math.ceil(dias / cantEvaluarTiempo);
-        const personaPorDia = math.ceil(poblacion / tiempoEvaluarPersona);
+        const personaPorDia = Math.ceil(poblacion / tiempoEvaluarPersona);
+
+
+        console.log("dias: ", dias);
+        console.log("preguntas Por Dia: ", preguntasPorDia);
+        console.log("cantEvaluarTiempo: ", cantEvaluarTiempo);
+        console.log("tiempoEvaluarPersona: ", tiempoEvaluarPersona);
+        console.log("personaPorDia: ", personaPorDia);
     });
+
+
+
 }

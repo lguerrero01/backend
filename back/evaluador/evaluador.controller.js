@@ -42,6 +42,6 @@ function deleteEvaluador(req, res, next) {
 }
 
 function probarFuncion(req, res, next) {
-    EVALUADOR_SERVICE.determinarPoblacion();
+    EVALUADOR_SERVICE.preguntasPorDia();
     res.json({})
 }

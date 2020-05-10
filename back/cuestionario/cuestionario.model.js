@@ -33,7 +33,7 @@ const preguntasSchema = new Schema({
 });
 
 const CUESTIONARIO = mongoose.model('Cuestionario', cuestionarioSchema);
-const PREGUNTAS = mongoose.model('interrogacion', preguntasSchema);
+const PREGUNTAS = mongoose.model('Preguntas', preguntasSchema);
 
 module.exports = {
     CUESTIONARIO,

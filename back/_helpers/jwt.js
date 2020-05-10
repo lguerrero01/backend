@@ -21,7 +21,8 @@ function jwt() {
 			/^(\/evaluador\/getEvaluador\/)/,
 			/^(\/evaluador\/deleteEvaluador\/)/,
 			/^(\/evaluador\/editEvaluador\/)/,
-			'/evaluador/prueba'
+			'/evaluador/prueba',
+			'/cuestionario/addPregunta'
 
 		]
 	});

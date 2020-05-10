@@ -30,16 +30,16 @@ const evaluadorSchema = new Schema({
     },
     periodicidad: { //tiempo que se repetira la encuesta
         type: Number,
-        require: true
+        // require: true
     },
     tiempoCuestionario: { // tiempo en que se debe terminar la encuesta 
         type: Number,
         require: true
     },
     pregunta: [{
-		type: Schema.Types.ObjectId,
-		ref: 'Pregunta'
-	}]
+        type: Schema.Types.ObjectId,
+        ref: 'Preguntas'
+    }]
 
 });
 
@@ -47,7 +47,6 @@ const evaluadorSchema = new Schema({
 const preguntasSchema = new Schema({
     descripcion: {
         type: String,
-        default: '',
         unique: true,
         require: true
     }

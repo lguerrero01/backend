@@ -1,7 +1,7 @@
 // Paquete necesario para conectar a bases de datos MySQL.
 var mysql = require('mysql');
 // Consulta SQL.
-var sql = 'SELECT * FROM v_ficha WHERE `estado` = "carabobo" ';
+// var sql = 'SELECT * FROM v_ficha WHERE `estado` = "carabobo" ';
 // var poblacionSql = 'SELECT * FROM ficha LIMIT 10'
 
 

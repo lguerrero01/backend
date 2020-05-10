@@ -26,11 +26,13 @@ async function getCuestionario(idCuestionario) {
 }
 
 async function getCuestionarioCargo(cargo) {
-    return (await COLLECTION_CUESTIONARIO.findOne({ cargo: cargo }));
+    return (await COLLECTION_CUESTIONARIO.findOne({
+        cargo: cargo
+    }));
 }
 
 async function getAllPregunta() {
-    return(await COLLECTION_PREGUNTA.find());
+    return (await COLLECTION_PREGUNTA.find());
 }
 
 async function getPregunta(idPregunta) {
