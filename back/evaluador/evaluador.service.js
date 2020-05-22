@@ -2,7 +2,7 @@ config = require('config.json');
 const DB = require('_helpers/db');
 const COLLECTION_EVALUADOR = DB.Evaluador;
 
-var con = require("../config/DbConnectionsMysql");
+// var con = require("../config/DbConnectionsMysql");
 //*******************
 
 //********************
@@ -217,8 +217,8 @@ async function preguntasPorDia() {
         const cantPreguntas = evaluador.pregunta.length;
 
 
-        console.log("\n 219 console log de tiempo cuestionario", evaluador.tiempoCuestionario);
-        console.log(" 220 console log de periodicidad", evaluador.periodicidad);
+        console.log("\n (219) console log de tiempo cuestionario", evaluador.tiempoCuestionario);
+        console.log(" (220) console log de periodicidad", evaluador.periodicidad);
 
 
         const dias = Math.ceil(evaluador.tiempoCuestionario / evaluador.periodicidad);
@@ -237,19 +237,23 @@ async function preguntasPorDia() {
 
 }
 
+
+async function _execute(_query) {
+    var con = require("../config/DbConnectionsMysql");
+
+    try {
+        var rows = await con.query(_query);
+        return rows;
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
 async function prueba() {
     var consultaSql = 'SELECT * FROM v_ficha LIMIT 20';
+    var pool = _execute(consultaSql);
 
+    console.log("(256) pool: ", pool);
 
-    con.query(consultaSql, function (err, result) {
-        if (err) throw err;
-
-        poblacion = result.length;
-
-        console.log("(249) poblacion nacional: ", poblacion);
-
-
-    });
-
-    console.log("(254)hola esto es una prueba ");
+    console.log("(254) hola esto es una prueba ");
 }

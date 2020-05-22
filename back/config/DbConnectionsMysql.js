@@ -1,12 +1,14 @@
 // Paquete necesario para conectar a bases de datos MySQL.
 var mysql = require('mysql');
+const util = require('util')
 // Consulta SQL.
 // var sql = 'SELECT * FROM v_ficha WHERE `estado` = "carabobo" ';
 // var poblacionSql = 'SELECT * FROM ficha LIMIT 10'
 
 
 // Parámetros de conexión a la base de datos.
-var con = mysql.createConnection({
+var con = mysql.createPool({
+    connectionLimit: 10,
     host: '69.10.42.61',
     user: 'ib_encuestas',
     password: 'Ibarti$$1234',
@@ -14,6 +16,8 @@ var con = mysql.createConnection({
     port: 5360
 });
 //
+con.query = util.promisify(con.query);
+
 module.exports = con;
 
 // Funcion que nos permite comprobar la conexión a la base de datos.
