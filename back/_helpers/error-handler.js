@@ -21,7 +21,7 @@ function errorHandler(err, req, res, next) {
 			message: 'Invalid Token'
 		});
 	}
-	if (err.code === 11000) return res.status(409).send('Email already exists');
+	if (err.code === 11000) return res.status(409).send('already exists');
 	// Por defecto Error del servidor
 	return res.status(500).json({
 		message: err.message
