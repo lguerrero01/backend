@@ -62,41 +62,22 @@ async function determinarPoblacion(evaluador) {
 
         var consultaSql = 'SELECT * FROM v_ficha LIMIT 20';
 
-        // con.connect(function (err) {
-        //     if (err) throw err;
-        //     console.log("Conectado a poblacion nacional");
+        var pool = await _execute(consultaSql);
+        poblacion = pool.length;
+        console.log("67 poblacion nacional: ", poblacion);
 
-
-        // });
-        con.query(consultaSql, function (err, result) {
-            if (err) throw err;
-
-            poblacion = result.length;
-
-            console.log("75 poblacion nacional: ", poblacion);
-
-
-        });
 
     } else {
 
         if (evaluador.ratio.clientes == null) { //cuando no tiene clientes 
             var consultaSql = `SELECT * FROM v_ficha WHERE cod_estado = '${evaluador.ratio.tipoAlcance}' LIMIT 20`;
 
-            // con.connect(function (err) {
-            //     if (err) throw err;
+            console.log("(79)Conectado a poblacion estadal sin clientes");
 
-            // });
-            console.log("Conectado a poblacion estadal sin clientes");
-            con.query(consultaSql, function (err, result) {
-                if (err) throw err;
+            var pool = await _execute(consultaSql);
+            poblacion = pool.length;
 
-                poblacion = result.length;
-
-                console.log("linea 95 poblacion estadal: ", poblacion);
-
-
-            });
+            console.log("linea 95 poblacion estadal: ", poblacion);
 
 
         } else {
@@ -119,7 +100,7 @@ async function determinarPoblacion(evaluador) {
 
             if (clienteSinUbicacion.length > 0) {
                 console.log(evaluador);
-                console.log("121 estoy en cliente sin ubicacion \n");
+                console.log("(103) estoy en cliente sin ubicacion \n");
                 var consultaConCliente = `SELECT * FROM v_ficha WHERE (cod_estado = '${evaluador.ratio.tipoAlcance}' AND (`;
 
                 clienteSinUbicacion.forEach(cliente => { //concardenar consulta para los clientes sin ubicacion
@@ -147,14 +128,10 @@ async function determinarPoblacion(evaluador) {
                 //         con.end();
                 //     });
                 // });
-                con.query(consultaConCliente, function (err, result) {
-                    if (err) throw err;
 
-                    poblacion = result.length;
+                var pool = await _execute(consultaConCliente);
+                poblacion = pool.length;
 
-                    console.log("154 poblacion con cliente:", poblacion);
-
-                });
                 console.log("consulta de clientes sin ubicacion", consultaConCliente);
 
                 //***********************//
@@ -180,23 +157,18 @@ async function determinarPoblacion(evaluador) {
                 consultaConUbicacion = consultaConUbicacion.substring(0, consultaConUbicacion.length - 4); //elimina el ultimo AND de la consulta
 
                 // consultaConCliente = consultaConCliente.split(' AND')[0]; //elimina el ultimo OR de la consulta
-                console.log("clientes con ubicacion", consultaConUbicacion);
+                console.log("(160)clientes con ubicacion", consultaConUbicacion);
 
                 //*************************/
-                // con.connect( function (err) {
-                //     if (err) throw err;
-                // });
-                console.log("Conectado a poblacion estadal con clientes con ubicacion");
 
-                con.query(consultaConUbicacion, function (err, result) {
-                    if (err) throw err;
+                console.log("(164)Conectado a poblacion estadal con clientes con ubicacion");
 
-                    poblacion = result.length;
 
-                    console.log("poblacion 193: ", poblacion);
+                var pool = await _execute(consultaConUbicacion);
+                poblacion = pool.length;
+                // console.log("(169)poblacion: ", poblacion);
 
-                    // con.end();
-                });
+
 
                 //***********************/
             }
@@ -212,33 +184,37 @@ async function determinarPoblacion(evaluador) {
 async function preguntasPorDia() {
     const evaluadores = await COLLECTION_EVALUADOR.find();
 
-    evaluadores.forEach((evaluador) => {
-        const poblacion = determinarPoblacion(evaluador);
+    // const evaluador = evaluadores[0];
+
+    evaluadores.forEach(async (evaluador, index) => {
+        const poblacion = await determinarPoblacion(evaluador);
         const cantPreguntas = evaluador.pregunta.length;
 
 
-        console.log("\n (219) console log de tiempo cuestionario", evaluador.tiempoCuestionario);
-        console.log(" (220) console log de periodicidad", evaluador.periodicidad);
+
+        const tiempoEstimadoParaCuestionario = Math.ceil(evaluador.tiempoCuestionario / evaluador.periodicidad);
+        const preguntasPorDia = Math.floor(tiempoEstimadoParaCuestionario / cantPreguntas);
+
+        const cantidadPersonasEvaluarPorDia = Math.ceil(poblacion / preguntasPorDia);
 
 
-        const dias = Math.ceil(evaluador.tiempoCuestionario / evaluador.periodicidad);
-        const preguntasPorDia = Math.ceil(dias / cantPreguntas);
-        const cantEvaluarTiempo = Math.ceil(cantPreguntas / preguntasPorDia);
-        const tiempoEvaluarPersona = Math.ceil(dias / cantEvaluarTiempo);
-        const personaPorDia = Math.ceil(poblacion / tiempoEvaluarPersona);
-
-
-        console.log("\ndias: ", dias);
-        console.log("preguntas Por Dia: ", preguntasPorDia);
-        console.log("cantEvaluarTiempo: ", cantEvaluarTiempo);
-        console.log("tiempoEvaluarPersona: ", tiempoEvaluarPersona);
-        console.log("personaPorDia: ", personaPorDia);
+        console.log("\nevaluador numero: ", index, evaluador._id);
+        console.log("(192) console log de tiempo cuestionario: ", evaluador.tiempoCuestionario); //dias laborables del año
+        console.log("(193) console log de periodicidad: ", evaluador.periodicidad, "\n"); // cada cuanto se repetira el cuestionario
+        console.log(cantPreguntas, " preguntas a ", poblacion, " personas en ", tiempoEstimadoParaCuestionario, " dias");
+        console.log(preguntasPorDia, " dias para hacer 1 pregunta a cada persona");
+        console.log(cantidadPersonasEvaluarPorDia, " personas a evaluar por dia");
     });
+
+
+    // evaluadores.forEach((evaluador) => {
+
+    // });
 
 }
 
 
-async function _execute(_query) {
+async function _execute(_query) { //funcion que ejecuta queries
     var con = require("../config/DbConnectionsMysql");
 
     try {
@@ -251,7 +227,7 @@ async function _execute(_query) {
 
 async function prueba() {
     var consultaSql = 'SELECT * FROM v_ficha LIMIT 20';
-    var pool = _execute(consultaSql);
+    var pool = await _execute(consultaSql);
 
     console.log("(256) pool: ", pool);
 
