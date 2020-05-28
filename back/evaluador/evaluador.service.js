@@ -14,7 +14,9 @@ module.exports = {
     deleteEvaluador,
     preguntasPorDia,
     determinarPoblacion,
-    prueba
+    prueba,
+    preguntasAleatorias,
+    repetirPreguntas
 }
 
 async function getAllEvaluador() {
@@ -194,7 +196,6 @@ async function preguntasPorDia() {
 
         const tiempoEstimadoParaCuestionario = Math.ceil(evaluador.tiempoCuestionario / evaluador.periodicidad);
         const preguntasPorDia = Math.floor(tiempoEstimadoParaCuestionario / cantPreguntas);
-
         const cantidadPersonasEvaluarPorDia = Math.ceil(poblacion / preguntasPorDia);
 
 
@@ -206,10 +207,6 @@ async function preguntasPorDia() {
         console.log(cantidadPersonasEvaluarPorDia, " personas a evaluar por dia");
     });
 
-
-    // evaluadores.forEach((evaluador) => {
-
-    // });
 
 }
 
@@ -232,4 +229,43 @@ async function prueba() {
     console.log("(256) pool: ", pool);
 
     console.log("(254) hola esto es una prueba ");
+}
+
+async function preguntasAleatorias(preguntas = ["12", "23", "34", "45", "555"], preguntasHechas = ["34", "45"]) {
+
+    var preguntasPorHacer = [];
+
+    preguntas.forEach(pregunta => {
+        var repetido = false;
+        preguntasHechas.forEach(preguntaHecha => {
+            if (pregunta === preguntaHecha) {
+                repetido = true;
+                return;
+            }
+        });
+        if (!repetido) {
+            preguntasPorHacer.push(pregunta);
+        }
+    });
+
+    var indiceAleatorio = Math.floor(Math.random() * preguntasPorHacer.length);
+
+    console.log("indice aleatorio: ", indiceAleatorio);
+
+    console.log("\n pregunta: ", preguntasPorHacer[indiceAleatorio]);
+
+}
+
+//funcion que eliga personas a evaluar aleatoriamente
+
+async function repetirPreguntas(f1 = '10/09/2014', f2 = '15/10/2014') { //resta las fechas para hacer las siguentes preguntas a todas las personas a evaluar
+
+    var aFecha1 = f1.split('/');
+    var aFecha2 = f2.split('/');
+    var fFecha1 = Date.UTC(aFecha1[2], aFecha1[1] - 1, aFecha1[0]);
+    var fFecha2 = Date.UTC(aFecha2[2], aFecha2[1] - 1, aFecha2[0]);
+    var dif = fFecha2 - fFecha1;
+    var dias = Math.floor(dif / (1000 * 60 * 60 * 24));
+
+    console.log(dias);
 }

@@ -39,6 +39,10 @@ const evaluadorSchema = new Schema({
     pregunta: [{
         type: Schema.Types.ObjectId,
         ref: 'Preguntas'
+    }],
+    personasEvaluadas: [{
+        identificador: String,
+        date: Date
     }]
 
 });
