@@ -2,9 +2,9 @@ config = require('config.json');
 const DB = require('_helpers/db');
 const COLLECTION_EVALUADOR = DB.Evaluador;
 
-// var con = require("../config/DbConnectionsMysql");
-//*******************
 
+//*******************
+// var con = require("../config/DbConnectionsMysql");
 //********************
 module.exports = {
     getAllEvaluador,
@@ -16,7 +16,8 @@ module.exports = {
     determinarPoblacion,
     prueba,
     preguntasAleatorias,
-    repetirPreguntas
+    repetirPreguntas,
+    evaluadoresAleatorios
 }
 
 async function getAllEvaluador() {
@@ -222,7 +223,7 @@ async function _execute(_query) { //funcion que ejecuta queries
     }
 }
 
-async function prueba() {
+async function prueba() { //funcion para probar consultas
     var consultaSql = 'SELECT * FROM v_ficha LIMIT 20';
     var pool = await _execute(consultaSql);
 
@@ -231,7 +232,7 @@ async function prueba() {
     console.log("(254) hola esto es una prueba ");
 }
 
-async function preguntasAleatorias(preguntas = ["12", "23", "34", "45", "555"], preguntasHechas = ["34", "45"]) {
+async function preguntasAleatorias(preguntas = ["12", "23", "34", "45", "555"], preguntasHechas = ["34", "45"]) { //muestra preguntas aleatorias, el array de preguntas hechas descarta las preguntas del primer array
 
     var preguntasPorHacer = [];
 
@@ -256,7 +257,30 @@ async function preguntasAleatorias(preguntas = ["12", "23", "34", "45", "555"], 
 
 }
 
-//funcion que eliga personas a evaluar aleatoriamente
+async function evaluadoresAleatorios(evaluadores = ["evaluador 1", "evaluador 2", "evaluador 3", "evaluador 4"], evaluadoresListos = ["evaluador 4"]) { //retorna un evaluador aleatorios 
+
+    var evaluadoresPendientes = [];
+    evaluadores.forEach(evaluador => {
+        var repetido = false;
+
+        evaluadoresListos.forEach(evaluadorListo => {
+            if (evaluador === evaluadorListo) {
+                repetido = true;
+                return;
+            }
+        });
+        if (!repetido) {
+            evaluadoresPendientes.push(evaluador);
+        }
+
+    });
+    var indiceAleatorio = Math.floor(Math.random() * evaluadoresPendientes.length);
+    console.log("\n indice aleatorio: ", indiceAleatorio);
+
+    console.log("evaluador: ", evaluadoresPendientes[indiceAleatorio]);
+
+
+}
 
 async function repetirPreguntas(f1 = '10/09/2014', f2 = '15/10/2014') { //resta las fechas para hacer las siguentes preguntas a todas las personas a evaluar
 
