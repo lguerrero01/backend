@@ -42,8 +42,18 @@ const evaluadorSchema = new Schema({
     }],
     personasEvaluadas: [{
         identificador: String,
-        date: Date
-    }]
+        estaEvaluado: Boolean,
+        preguntasHechas: [{
+            type: String
+        }],
+        preguntasARealizar: [{
+            type: String
+        }]
+    }],
+    date: Date,
+    tiempoEstimadoParaCuestionario: Number,
+    preguntasPorDia: Number,
+    cantidadPersonasEvaluarPorDia: Number
 
 });
 

@@ -42,10 +42,9 @@ function deleteEvaluador(req, res, next) {
 }
 
 function probarFuncion(req, res, next) {
-    EVALUADOR_SERVICE.preguntasPorDia();
-    // EVALUADOR_SERVICE.evaluadoresAleatorios();
+    // EVALUADOR_SERVICE.principal();
+    EVALUADOR_SERVICE.preguntasAleatorias();
     // EVALUADOR_SERVICE.repetirPreguntas();
     // EVALUADOR_SERVICE.prueba(); //funcion para probar consultas con async/await
-
     res.json({})
 }
